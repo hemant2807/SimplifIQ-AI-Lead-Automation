@@ -263,11 +263,14 @@ export default function Home() {
 
     setStatus("loading");
     try {
-      const response = await fetch("http://localhost:5000/api/lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/lead`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        },
+      );
       if (!response.ok) {
         const json = await response.json().catch(() => ({}));
         throw new Error(json.message || "Server error");
