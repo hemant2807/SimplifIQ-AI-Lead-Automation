@@ -7,6 +7,7 @@ const scrapeWebsite = require("./services/scrapeWebsite");
 const generateInsights = require("./services/generateInsights");
 const generatePdf = require("./services/generatePdf");
 const sendEmail = require("./services/sendEmail");
+const logToSheets = require("./services/logToSheets");
 
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
@@ -114,6 +115,13 @@ app.post("/api/lead", async (req, res) => {
   } catch (emailErr) {
     console.error(`[Email] Error: ${emailErr.message}`);
     emailStatus = { sent: false, error: emailErr.message };
+  }
+
+  try {
+    await logToSheets(req.body, emailStatus ? "Sent" : "Failed");
+    console.log(`[Sheets] Lead logged successfully`);
+  } catch (sheetsErr) {
+    console.error(`[Sheets] Error: ${sheetsErr.message}`);
   }
 
   return ok(res, {
