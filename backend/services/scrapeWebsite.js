@@ -31,7 +31,7 @@ const scrapeWebsite = async (url) => {
     $("p").each((i, el) => {
       const text = $(el).text().trim();
 
-      if (text.length > 50) {
+      if (text.length > 20) {
         paragraphs.push(text);
       }
     });

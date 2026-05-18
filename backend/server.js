@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const app = express();
 const scrapeWebsite = require("./services/scrapeWebsite");
+const generateInsights = require("./services/generateInsights");
 
 app.use(cors());
 app.use(express.json());
@@ -24,9 +25,14 @@ app.post("/api/lead", async (req, res) => {
     console.log("Scraped data:");
     console.log(scrapedData);
 
+    const insights = await generateInsights(scrapedData);
+    console.log("AI Insights:");
+    console.log(insights);
+
     res.json({
       success: true,
       scrapedData,
+      insights,
     });
   } catch (error) {
     console.log(error);
