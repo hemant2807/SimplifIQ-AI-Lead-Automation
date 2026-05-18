@@ -3,6 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
+const scrapeWebsite = require("./services/scrapeWebsite");
 
 app.use(cors());
 app.use(express.json());
@@ -11,14 +12,30 @@ app.get("/", (req, res) => {
   res.send("Backend running");
 });
 
-app.post("/api/lead", (req, res) => {
-  console.log("Lead received:");
-  console.log(req.body);
+app.post("/api/lead", async (req, res) => {
+  try {
+    const { website } = req.body;
 
-  res.json({
-    success: true,
-    message: "Lead submitted successfully",
-  });
+    console.log("Lead received:");
+    console.log(req.body);
+
+    const scrapedData = await scrapeWebsite(website);
+
+    console.log("Scraped data:");
+    console.log(scrapedData);
+
+    res.json({
+      success: true,
+      scrapedData,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
 });
 
 const PORT = process.env.PORT || 5000;
