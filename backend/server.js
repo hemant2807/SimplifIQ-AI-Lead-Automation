@@ -5,6 +5,7 @@ require("dotenv").config();
 const app = express();
 const scrapeWebsite = require("./services/scrapeWebsite");
 const generateInsights = require("./services/generateInsights");
+const generatePdf = require("./services/generatePdf");
 
 app.use(cors());
 app.use(express.json());
@@ -28,6 +29,11 @@ app.post("/api/lead", async (req, res) => {
     const insights = await generateInsights(scrapedData);
     console.log("AI Insights:");
     console.log(insights);
+
+    const pdfPath = await generatePdf(req.body, insights);
+
+    console.log("PDF Generated:");
+    console.log(pdfPath);
 
     res.json({
       success: true,
